@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ongoing Events - Event Look AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#334155',      
+                        secondary: '#475569',    
+                        accent: '#3b82f6',       
+                        success: '#059669',      
+                        warning: '#d97706',      
+                        neutral: '#64748b',      
+                        surface: '#f8fafc',      
+                        dark: '#1e293b'          
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 3s ease-in-out infinite',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'scale-in': 'scaleIn 0.6s ease-out',
+                        'bounce-slow': 'bounce 3s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite'
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-15px)' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(30px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        scaleIn: {
+                            '0%': { transform: 'scale(0.95)', opacity: '0' },
+                            '100%': { transform: 'scale(1)', opacity: '1' }
+                        },
+                        shimmer: {
+                            '0%': { transform: 'translateX(-100%)' },
+                            '100%': { transform: 'translateX(100%)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #334155, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .event-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        .event-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 min-h-screen">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-br from-accent to-primary rounded-xl p-2.5">
+                        <i class="fas fa-calendar-alt text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-primary">Event Look AI</h1>
+                        <p class="text-xs text-neutral">by R.I.B TECHNOLOGY</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="landing.html" class="text-neutral hover:text-primary transition-colors duration-300 font-medium">Home</a>
+                    <a href="#" class="text-primary font-semibold">Events</a>
+                    <a href="#" class="text-neutral hover:text-primary transition-colors duration-300 font-medium">Analytics</a>
+                    <a href="#" class="text-neutral hover:text-primary transition-colors duration-300 font-medium">Settings</a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button class="bg-slate-100 hover:bg-slate-200 p-2.5 rounded-xl transition-colors duration-300 relative">
+                            <i class="fas fa-bell text-neutral"></i>
+                            <span class="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </button>
+                    </div>
+                    <div class="w-10 h-10 bg-gradient-to-br from-accent to-primary rounded-xl flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="pt-24 pb-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 mb-8">
+                <div class="animate-slide-up">
+                    <h1 class="text-4xl lg:text-5xl font-bold text-primary mb-4">
+                        Ongoing Events
+                    </h1>
+                    <p class="text-xl text-neutral">
+                        Monitor and manage your live events in real-time
+                    </p>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row gap-4 animate-scale-in">
+                    <button class="bg-accent hover:bg-accent/90 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg flex items-center">
+                        <i class="fas fa-plus mr-2"></i>
+                        Create Event
+                    </button>
+                    <button class="border-2 border-primary text-primary hover:bg-primary hover:text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 flex items-center">
+                        <i class="fas fa-filter mr-2"></i>
+                        Filter
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50 hover:shadow-lg transition-all duration-300 animate-scale-in">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral text-sm font-medium mb-1">Total Events</p>
+                            <p class="text-3xl font-bold text-primary">24</p>
+                            <p class="text-success text-sm flex items-center mt-1">
+                                <i class="fas fa-arrow-up mr-1"></i> +12% this month
+                            </p>
+                        </div>
+                        <div class="bg-accent/10 p-3 rounded-xl">
+                            <i class="fas fa-calendar-check text-accent text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50 hover:shadow-lg transition-all duration-300 animate-scale-in" style="animation-delay: 0.1s">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral text-sm font-medium mb-1">Live Attendees</p>
+                            <p class="text-3xl font-bold text-primary">12.5K</p>
+                            <p class="text-success text-sm flex items-center mt-1">
+                                <i class="fas fa-arrow-up mr-1"></i> +8.3% today
+                            </p>
+                        </div>
+                        <div class="bg-success/10 p-3 rounded-xl">
+                            <i class="fas fa-users text-success text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50 hover:shadow-lg transition-all duration-300 animate-scale-in" style="animation-delay: 0.2s">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral text-sm font-medium mb-1">Success Rate</p>
+                            <p class="text-3xl font-bold text-primary">98.7%</p>
+                            <p class="text-warning text-sm flex items-center mt-1">
+                                <i class="fas fa-arrow-up mr-1"></i> +2.1% improvement
+                            </p>
+                        </div>
+                        <div class="bg-warning/10 p-3 rounded-xl">
+                            <i class="fas fa-chart-line text-warning text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50 hover:shadow-lg transition-all duration-300 animate-scale-in" style="animation-delay: 0.3s">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-neutral text-sm font-medium mb-1">Revenue</p>
+                            <p class="text-3xl font-bold text-primary">$2.4M</p>
+                            <p class="text-success text-sm flex items-center mt-1">
+                                <i class="fas fa-arrow-up mr-1"></i> +15.2% this quarter
+                            </p>
+                        </div>
+                        <div class="bg-primary/10 p-3 rounded-xl">
+                            <i class="fas fa-dollar-sign text-primary text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Events Section -->
+    <section class="pb-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-bold text-primary flex items-center">
+                    <div class="w-3 h-3 bg-red-500 rounded-full mr-3 animate-pulse"></div>
+                    Live Events
+                </h2>
+                <div class="text-sm text-neutral flex items-center">
+                    <i class="fas fa-clock mr-2"></i>
+                    Last updated: 2 minutes ago
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- Live Event 1 -->
+                <div class="event-card rounded-2xl p-8 border border-white/50 animate-scale-in">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-gradient-to-br from-accent to-primary p-4 rounded-2xl">
+                                <i class="fas fa-microchip text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-primary mb-1">AI Tech Conference 2025</h3>
+                                <p class="text-neutral text-sm">Grand Convention Center • Hall A</p>
+                                <p class="text-neutral text-xs mt-1">Started 2 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="bg-red-500/20 text-red-600 px-3 py-1 rounded-full text-xs font-semibold flex items-center">
+                            <div class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></div>
+                            LIVE
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-neutral text-sm">Current Attendance</span>
+                            <span class="text-primary font-bold">2,847 / 3,000</span>
+                        </div>
+                        <div class="bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div class="bg-gradient-to-r from-accent to-primary h-full rounded-full shimmer" style="width: 94.9%"></div>
+                        </div>
+                        <div class="text-right text-accent text-sm font-semibold">94.9% capacity</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-primary">45</div>
+                            <div class="text-xs text-neutral">Check-ins/min</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-success">4.8/5</div>
+                            <div class="text-xs text-neutral">Rating</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-warning">8</div>
+                            <div class="text-xs text-neutral">Sessions</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button class="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center">
+                            <i class="fas fa-eye mr-2"></i>
+                            View Details
+                        </button>
+                        <button class="bg-slate-100 hover:bg-slate-200 text-neutral px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center">
+                            <i class="fas fa-chart-bar mr-2"></i>
+                            Analytics
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Live Event 2 -->
+                <div class="event-card rounded-2xl p-8 border border-white/50 animate-scale-in" style="animation-delay: 0.1s">
+                    <div class="flex items-start justify-between mb-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-gradient-to-br from-success to-emerald-600 p-4 rounded-2xl">
+                                <i class="fas fa-leaf text-white text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-primary mb-1">Green Summit 2025</h3>
+                                <p class="text-neutral text-sm">Eco Center • Main Auditorium</p>
+                                <p class="text-neutral text-xs mt-1">Started 4 hours ago</p>
+                            </div>
+                        </div>
+                        <div class="bg-red-500/20 text-red-600 px-3 py-1 rounded-full text-xs font-semibold flex items-center">
+                            <div class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></div>
+                            LIVE
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-center justify-between">
+                            <span class="text-neutral text-sm">Current Attendance</span>
+                            <span class="text-primary font-bold">1,652 / 2,000</span>
+                        </div>
+                        <div class="bg-slate-200 rounded-full h-3 overflow-hidden">
+                            <div class="bg-gradient-to-r from-success to-emerald-600 h-full rounded-full shimmer" style="width: 82.6%"></div>
+                        </div>
+                        <div class="text-right text-success text-sm font-semibold">82.6% capacity</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-primary">32</div>
+                            <div class="text-xs text-neutral">Check-ins/min</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-success">4.6/5</div>
+                            <div class="text-xs text-neutral">Rating</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-lg font-bold text-warning">12</div>
+                            <div class="text-xs text-neutral">Sessions</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button class="bg-success hover:bg-success/90 text-white px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center">
+                            <i class="fas fa-eye mr-2"></i>
+                            View Details
+                        </button>
+                        <button class="bg-slate-100 hover:bg-slate-200 text-neutral px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 flex items-center">
+                            <i class="fas fa-chart-bar mr-2"></i>
+                            Analytics
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Upcoming Events Section -->
+    <section class="pb-12">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-bold text-primary flex items-center">
+                    <i class="fas fa-clock text-warning mr-3"></i>
+                    Starting Soon
+                </h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Upcoming Event 1 -->
+                <div class="event-card rounded-2xl p-6 border border-white/50 animate-scale-in">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gradient-to-br from-warning to-orange-500 p-3 rounded-xl">
+                            <i class="fas fa-graduation-cap text-white text-xl"></i>
+                        </div>
+                        <div class="bg-warning/20 text-warning px-3 py-1 rounded-full text-xs font-semibold">
+                            In 30 min
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary mb-2">EdTech Innovation Forum</h3>
+                    <p class="text-neutral text-sm mb-4">Innovation Hub • Room 301</p>
+                    
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-neutral">Expected Attendees</span>
+                            <span class="text-primary font-semibold">850</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-neutral">Pre-registrations</span>
+                            <span class="text-success font-semibold">782 (92%)</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-warning hover:bg-warning/90 text-white py-2 rounded-lg font-medium text-sm transition-all duration-300">
+                        Monitor Pre-Event
+                    </button>
+                </div>
+                
+                <!-- Upcoming Event 2 -->
+                <div class="event-card rounded-2xl p-6 border border-white/50 animate-scale-in" style="animation-delay: 0.1s">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl">
+                            <i class="fas fa-palette text-white text-xl"></i>
+                        </div>
+                        <div class="bg-purple-500/20 text-purple-600 px-3 py-1 rounded-full text-xs font-semibold">
+                            In 1.5 hrs
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary mb-2">Creative Design Workshop</h3>
+                    <p class="text-neutral text-sm mb-4">Design Studio • Workshop Area</p>
+                    
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-neutral">Expected Attendees</span>
+                            <span class="text-primary font-semibold">120</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-neutral">Pre-registrations</span>
+                            <span class="text-success font-semibold">118 (98%)</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-purple-500 hover:bg-purple-500/90 text-white py-2 rounded-lg font-medium text-sm transition-all duration-300">
+                        Monitor Pre-Event
+                    </button>
+                </div>
+                
+                <!-- Upcoming Event 3 -->
+                <div class="event-card rounded-2xl p-6 border border-white/50 animate-scale-in" style="animation-delay: 0.2s">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="bg-gradient-to-br from-pink-500 to-rose-500 p-3 rounded-xl">
+                            <i class="fas fa-heart text-white text-xl"></i>
+                        </div>
+                        <div class="bg-pink-500/20 text-pink-600 px-3 py-1 rounded-full text-xs font-semibold">
+                            In 3 hrs
+                        </div>
+                    </div>
+                    <h3 class="text-lg font-bold text-primary mb-2">Health & Wellness Expo</h3>
+                    <p class="text-neutral text-sm mb-4">Wellness Center • Expo Hall</p>
+                    
+                    <div class="space-y-3 mb-4">
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-neutral">Expected Attendees</span>
+                            <span class="text-primary font-semibold">1,200</span>
+                        </div>
+                        <div class="flex items-center justify-between text-sm">
+                            <span class="text-neutral">Pre-registrations</span>
+                            <span class="text-success font-semibold">1,089 (91%)</span>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full bg-pink-500 hover:bg-pink-500/90 text-white py-2 rounded-lg font-medium text-sm transition-all duration-300">
+                        Monitor Pre-Event
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Events Section -->
+    <section class="pb-20 bg-white/30">
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-bold text-primary flex items-center">
+                    <i class="fas fa-history text-neutral mr-3"></i>
+                    Recently Completed
+                </h2>
+                <button class="text-accent hover:text-accent/80 font-medium text-sm flex items-center transition-colors duration-300">
+                    View All <i class="fas fa-arrow-right ml-2"></i>
+                </button>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Recent Event 1 -->
+                <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/50 hover:shadow-lg transition-all duration-300 animate-scale-in">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-gradient-to-br from-slate-400 to-slate-500 p-3 rounded-xl">
+                                <i class="fas fa-rocket text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-primary">Startup Pitch Competition</h3>
+                                <p class="text-neutral text-sm">Completed 2 hours ago • Business Center</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-6">
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-primary">456</div>
+                                <div class="text-xs text-neutral">Attendees</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-success">4.9/5</div>
+                                <div class="text-xs text-neutral">Rating</div>
+                            </div>
+                            <div class="bg-success/20 text-success px-3 py-1 rounded-full text-xs font-semibold">
+                                Successful
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Event 2 -->
+                <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/50 hover:shadow-lg transition-all duration-300 animate-scale-in" style="animation-delay: 0.1s">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-gradient-to-br from-slate-400 to-slate-500 p-3 rounded-xl">
+                                <i class="fas fa-code text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-primary">Coding Bootcamp</h3>
+                                <p class="text-neutral text-sm">Completed yesterday • Tech Campus</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-6">
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-primary">234</div>
+                                <div class="text-xs text-neutral">Attendees</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-success">4.7/5</div>
+                                <div class="text-xs text-neutral">Rating</div>
+                            </div>
+                            <div class="bg-success/20 text-success px-3 py-1 rounded-full text-xs font-semibold">
+                                Successful
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Event 3 -->
+                <div class="bg-white/70 backdrop-blur-sm rounded-xl p-6 border border-white/50 hover:shadow-lg transition-all duration-300 animate-scale-in" style="animation-delay: 0.2s">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="bg-gradient-to-br from-slate-400 to-slate-500 p-3 rounded-xl">
+                                <i class="fas fa-music text-white text-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-primary">Music Festival Opening</h3>
+                                <p class="text-neutral text-sm">Completed 3 days ago • Central Park</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-6">
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-primary">15.2K</div>
+                                <div class="text-xs text-neutral">Attendees</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-success">4.8/5</div>
+                                <div class="text-xs text-neutral">Rating</div>
+                            </div>
+                            <div class="bg-success/20 text-success px-3 py-1 rounded-full text-xs font-semibold">
+                                Successful
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Floating Action Button -->
+    <div class="fixed bottom-8 right-8 z-40">
+        <button class="bg-accent hover:bg-accent/90 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110">
+            <i class="fas fa-plus text-xl"></i>
+        </button>
+    </div>
+
+    <script>
+        // Auto-refresh live data every 30 seconds
+        setInterval(() => {
+            // Simulate real-time updates
+            const liveElements = document.querySelectorAll('.animate-pulse');
+            liveElements.forEach(el => {
+                el.style.animation = 'none';
+                setTimeout(() => {
+                    el.style.animation = '';
+                }, 10);
+            });
+        }, 30000);
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-scale-in', 'animate-slide-up', 'animate-fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.querySelectorAll('.animate-scale-in, .animate-slide-up').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Simulate real-time attendance updates
+        function updateAttendance() {
+            const attendanceElements = document.querySelectorAll('[data-attendance]');
+            attendanceElements.forEach(el => {
+                const current = parseInt(el.textContent.split(' ')[0].replace(',', ''));
+                const newValue = current + Math.floor(Math.random() * 10) - 5;
+                if (newValue > 0) {
+                    el.textContent = newValue.toLocaleString() + el.textContent.substring(el.textContent.indexOf(' '));
+                }
+            });
+        }
+
+        // Update attendance every 5 seconds for demo
+        setInterval(updateAttendance, 5000);
+    </script>
+</body>
+</html>
